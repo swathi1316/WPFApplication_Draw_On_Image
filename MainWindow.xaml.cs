@@ -29,183 +29,245 @@ namespace DrawImage
 
         public MainWindow()
         {
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception here or re-throw it to the calling code
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
         }
 
         private void LoadImage_Click(object sender, RoutedEventArgs e)
         {
-            // Open a file dialog to let the user select an image
-            var openFileDialog = new Microsoft.Win32.OpenFileDialog
+            try
             {
-                Filter = "Image Files (*.bmp;*.jpg;*.jpeg;*.png)|*.BMP;*.JPG;*.JPEG;*.PNG",
-                Title = "Select an Image File"
-            };
-
-            if (openFileDialog.ShowDialog() == true)
-            {
-                // Get the file path of the selected image
-                var imagePath = openFileDialog.FileName;
-
-                // Load the image into a BitmapImage object and set it as the source of the Image element
-                var bitmap = new BitmapImage(new Uri(imagePath));
-                MyImage.Source = bitmap;
-
-                // Remove any existing rectangles from the Grid
-                var existingRectangles = MyGrid.Children.OfType<System.Windows.Shapes.Rectangle>().ToList();
-                foreach (var rectangle in existingRectangles)
+                // Open a file dialog to let the user select an image
+                var openFileDialog = new Microsoft.Win32.OpenFileDialog
                 {
-                    MyGrid.Children.Remove(rectangle);
-                }
+                    Filter = "Image Files (*.bmp;*.jpg;*.jpeg;*.png)|*.BMP;*.JPG;*.JPEG;*.PNG",
+                    Title = "Select an Image File"
+                };
 
-                // Attach event handlers to the Image element to allow the user to draw rectangles on it
-                MyImage.MouseDown += Rec_MouseDown;
-                MyImage.MouseMove += Rec_MouseMovement;
-                MyImage.MouseUp += Rec_MouseUp;
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    // Get the file path of the selected image
+                    var imagePath = openFileDialog.FileName;
+
+                    // Load the image into a BitmapImage object and set it as the source of the Image element
+                    var bitmap = new BitmapImage(new Uri(imagePath));
+                    MyImage.Source = bitmap;
+
+                    // Remove any existing rectangles from the Grid
+                    var existingRectangles = MyGrid.Children.OfType<System.Windows.Shapes.Rectangle>().ToList();
+                    foreach (var rectangle in existingRectangles)
+                    {
+                        MyGrid.Children.Remove(rectangle);
+                    }
+
+                    // Attach event handlers to the Image element to allow the user to draw rectangles on it
+                    MyImage.MouseDown += Rec_MouseDown;
+                    MyImage.MouseMove += Rec_MouseMovement;
+                    MyImage.MouseUp += Rec_MouseUp;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception here or re-throw it to the calling code
+                Console.WriteLine("An error occurred: " + ex.Message);
             }
         }
 
         private void Rec_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            // If the user is not already drawing a rectangle
-            if (!isDraw)
+            try
             {
-                // Set the starting point of the rectangle to the current mouse position
-                startDrawingPoint = e.GetPosition(MyImage);
-
-                // Create a new rectangle and add it to the Grid
-                rectanglePoint = new System.Windows.Shapes.Rectangle
+                // If the user is not already drawing a rectangle
+                if (!isDraw)
                 {
-                    Stroke = System.Windows.Media.Brushes.Black,
-                    StrokeThickness = 2
-                };
-                rectanglePoint.MouseDown += Color_Rec_MouseDown;
-                MyGrid.Children.Add(rectanglePoint);
+                    // Set the starting point of the rectangle to the current mouse position
+                    startDrawingPoint = e.GetPosition(MyImage);
 
-                // Set the flag to indicate that the user is drawing a rectangle
-                isDraw = true;
+                    // Create a new rectangle and add it to the Grid
+                    rectanglePoint = new System.Windows.Shapes.Rectangle
+                    {
+                        Stroke = System.Windows.Media.Brushes.Black,
+                        StrokeThickness = 2
+                    };
+                    rectanglePoint.MouseDown += Color_Rec_MouseDown;
+                    MyGrid.Children.Add(rectanglePoint);
+
+                    // Set the flag to indicate that the user is drawing a rectangle
+                    isDraw = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception here or re-throw it to the calling code
+                Console.WriteLine("An error occurred: " + ex.Message);
             }
         }
         private void Rec_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            // If the user was drawing a rectangle
-            if (isDraw)
+            try
             {
-                // If the rectangle is too small, remove it from the Grid
-                if (rectanglePoint.Width < 10 || rectanglePoint.Height < 10)
+                // If the user was drawing a rectangle
+                if (isDraw)
                 {
-                    MyGrid.Children.Remove(rectanglePoint);
+                    // If the rectangle is too small, remove it from the Grid
+                    if (rectanglePoint.Width < 10 || rectanglePoint.Height < 10)
+                    {
+                        MyGrid.Children.Remove(rectanglePoint);
+                    }
+                    else
+                    {
+                        // Set the flag to indicate that the user is not drawing a rectangle anymore
+                        isDraw = false;
+                    }
                 }
-                else
-                {
-                    // Set the flag to indicate that the user is not drawing a rectangle anymore
-                    isDraw = false;
-                }
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception here or re-throw it to the calling code
+                Console.WriteLine("An error occurred: " + ex.Message);
             }
         }
 
 
         private void Rec_MouseMovement(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            // If the user is drawing a rectangle
-            if (isDraw)
+            try
             {
-                // Calculate the size and position of the rectangle based on the current mouse position
-                double width = Math.Abs(e.GetPosition(MyImage).X - startDrawingPoint.X);
-                double height = Math.Abs(e.GetPosition(MyImage).Y - startDrawingPoint.Y);
-                double left = Math.Min(startDrawingPoint.X, e.GetPosition(MyImage).X);
-                double top = Math.Min(startDrawingPoint.Y, e.GetPosition(MyImage).Y);
+                // If the user is drawing a rectangle
+                if (isDraw)
+                {
+                    // Calculate the size and position of the rectangle based on the current mouse position
+                    double width = Math.Abs(e.GetPosition(MyImage).X - startDrawingPoint.X);
+                    double height = Math.Abs(e.GetPosition(MyImage).Y - startDrawingPoint.Y);
+                    double left = Math.Min(startDrawingPoint.X, e.GetPosition(MyImage).X);
+                    double top = Math.Min(startDrawingPoint.Y, e.GetPosition(MyImage).Y);
 
-                // Get the dimensions of the image
-                double imageWidth = MyImage.ActualWidth;
-                double imageHeight = MyImage.ActualHeight;
+                    // Get the dimensions of the image
+                    double imageWidth = MyImage.ActualWidth;
+                    double imageHeight = MyImage.ActualHeight;
 
-                // Restrict the rectangle to be drawn only inside the image
-                if (left < 0) left = 0;
-                if (top < 0) top = 0;
-                if (left + width > imageWidth) width = imageWidth - left;
-                if (top + height > imageHeight) height = imageHeight - top;
+                    // Restrict the rectangle to be drawn only inside the image
+                    if (left < 0) left = 0;
+                    if (top < 0) top = 0;
+                    if (left + width > imageWidth) width = imageWidth - left;
+                    if (top + height > imageHeight) height = imageHeight - top;
 
-                // Set the properties of the rectangle to draw it on the screen
-                Canvas.SetLeft(rectanglePoint, left);
-                Canvas.SetTop(rectanglePoint, top);
-                rectanglePoint.Width = width;
-                rectanglePoint.Height = height;
+                    // Set the properties of the rectangle to draw it on the screen
+                    Canvas.SetLeft(rectanglePoint, left);
+                    Canvas.SetTop(rectanglePoint, top);
+                    rectanglePoint.Width = width;
+                    rectanglePoint.Height = height;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception here or re-throw it to the calling code
+                Console.WriteLine("An error occurred: " + ex.Message);
             }
         }
         private void Color_Rec_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            var rect = sender as System.Windows.Shapes.Rectangle;
-            if (rect != null)
+            try
             {
-                var colorDialog = new System.Windows.Forms.ColorDialog();
-                if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                var rect = sender as System.Windows.Shapes.Rectangle;
+                if (rect != null)
                 {
-                    rect.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));
-                }
+                    var colorDialog = new System.Windows.Forms.ColorDialog();
+                    if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        rect.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));
+                    }
 
-                // Select the rectangle and store it in the recSelected variable
-                recSelected = rect;
+                    // Select the rectangle and store it in the recSelected variable
+                    recSelected = rect;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception here or re-throw it to the calling code
+                Console.WriteLine("An error occurred: " + ex.Message);
             }
         }
 
 
         private void Delete_Click(object sender, RoutedEventArgs e)
         {
-            // If a rectangle is selected, remove it from the Grid
-
-            if (recSelected != null)
+            try
             {
-                MyGrid.Children.Remove(recSelected);
-                recSelected = null;
+                // If a rectangle is selected, remove it from the Grid
+
+                if (recSelected != null)
+                {
+                    MyGrid.Children.Remove(recSelected);
+                    recSelected = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception here or re-throw it to the calling code
+                Console.WriteLine("An error occurred: " + ex.Message);
             }
         }
         private void SaveImage_Click(object sender, RoutedEventArgs e)
         {
-            // Create a new instance of SaveFileDialog class
-            Microsoft.Win32.SaveFileDialog dialog = new Microsoft.Win32.SaveFileDialog();
-
-            // Set the file filter and default extension
-            dialog.Filter = "PNG Image (*.png)|*.png";
-            dialog.DefaultExt = ".png";
-
-            // Show the SaveFileDialog and wait for the user to select a file
-            if (dialog.ShowDialog() == true)
+            try
             {
-                // Create a new BitmapSource object from the current state of the image
-                Rect bounds = VisualTreeHelper.GetDescendantBounds(MyImage);
-                RenderTargetBitmap rtb = new RenderTargetBitmap((int)bounds.Width, (int)bounds.Height, 96, 96, PixelFormats.Default);
-                DrawingVisual dv = new DrawingVisual();
+                // Create a new instance of SaveFileDialog class
+                Microsoft.Win32.SaveFileDialog dialog = new Microsoft.Win32.SaveFileDialog();
 
-                using (DrawingContext dc = dv.RenderOpen())
+                // Set the file filter and default extension
+                dialog.Filter = "PNG Image (*.png)|*.png";
+                dialog.DefaultExt = ".png";
+
+                // Show the SaveFileDialog and wait for the user to select a file
+                if (dialog.ShowDialog() == true)
                 {
-                    // Draw the image onto the DrawingContext
-                    dc.DrawImage(MyImage.Source, new Rect(0, 0, bounds.Width, bounds.Height));
+                    // Create a new BitmapSource object from the current state of the image
+                    Rect bounds = VisualTreeHelper.GetDescendantBounds(MyImage);
+                    RenderTargetBitmap rtb = new RenderTargetBitmap((int)bounds.Width, (int)bounds.Height, 96, 96, PixelFormats.Default);
+                    DrawingVisual dv = new DrawingVisual();
 
-                    // Loop through each rectangle in the Grid and draw it on the image
-                    foreach (System.Windows.Shapes.Rectangle rect in MyGrid.Children.OfType<System.Windows.Shapes.Rectangle>())
+                    using (DrawingContext dc = dv.RenderOpen())
                     {
-                        SolidColorBrush brush = rect.Fill as SolidColorBrush;
-                        if (brush != null)
+                        // Draw the image onto the DrawingContext
+                        dc.DrawImage(MyImage.Source, new Rect(0, 0, bounds.Width, bounds.Height));
+
+                        // Loop through each rectangle in the Grid and draw it on the image
+                        foreach (System.Windows.Shapes.Rectangle rect in MyGrid.Children.OfType<System.Windows.Shapes.Rectangle>())
                         {
-                            System.Windows.Media.Pen pen = new System.Windows.Media.Pen(brush, 1.0);
-                            dc.DrawRectangle(null, pen, new Rect(Canvas.GetLeft(rect), Canvas.GetTop(rect), rect.Width, rect.Height));
+                            SolidColorBrush brush = rect.Fill as SolidColorBrush;
+                            if (brush != null)
+                            {
+                                System.Windows.Media.Pen pen = new System.Windows.Media.Pen(brush, 1.0);
+                                dc.DrawRectangle(null, pen, new Rect(Canvas.GetLeft(rect), Canvas.GetTop(rect), rect.Width, rect.Height));
+                            }
                         }
                     }
-                }
 
-                rtb.Render(dv);
+                    rtb.Render(dv);
 
-                // Create a new Bitmap object from the BitmapSource object
-                BitmapEncoder encoder = new PngBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(rtb));
-                using (Stream stream = File.Create(dialog.FileName))
-                {
-                    encoder.Save(stream);
+                    // Create a new Bitmap object from the BitmapSource object
+                    BitmapEncoder encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(rtb));
+                    using (Stream stream = File.Create(dialog.FileName))
+                    {
+                        encoder.Save(stream);
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                // Handle the exception here or re-throw it to the calling code
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
         }
-
-
 
     }
 
