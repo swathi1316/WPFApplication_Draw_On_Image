@@ -1,0 +1,21 @@
+﻿<!-- This XML file defines the layout of the main window of the DrawImage application. -->
+<Window x:Class="DrawImage.MainWindow" 
+     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+     Title="Image Loader" Height="600" Width="525" ResizeMode="CanResizeWithGrip">
+    <Grid x:Name="MyGrid">
+        <!-- An Image element named MyImage is defined to display the uploaded image. -->
+        <Image x:Name="MyImage" Stretch="None" />
+
+        <!-- Three Buttons are defined to allow the user to upload an image, save the displayed image and delete the displayed image. -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <Button Click="LoadImage_Click" Content="Upload Image" Margin="0,28,10,0"/>
+            <Button x:Name="SaveButton" Content="Save" Margin="10,28,10,0" Width="95" Click="SaveImage_Click"/>
+            <Button x:Name="DeleteButton" Content="Delete" Margin="10,28,0,0" Width="95" Click="Delete_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
+
+
+
+
